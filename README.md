@@ -14,7 +14,7 @@ npx hardhat run scripts/deploy.ts --network localhost # deploy FsKlay token(upgr
 
 ## To upgrade contract
 
-In `scripts/upgrade.ts`
+In `scripts/upgrade.ts`, copy and paste this script.
 
 ```typescript
 import { ethers, upgrades } from "hardhat";
@@ -40,4 +40,10 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+```
+
+and run `scripts/upgrade.ts`
+
+```bash
+npx hardhat run scripts/upgrade.ts --network [localhost | baobab]
 ```
