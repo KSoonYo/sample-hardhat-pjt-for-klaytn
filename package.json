@@ -29,6 +29,8 @@
     "@klaytn/contracts": "^1.0.6",
     "@openzeppelin/contracts": "^4.8.2",
     "@openzeppelin/contracts-upgradeable": "^4.8.2",
-    "blockchain-key-manager": "^1.0.5"
+    "@openzeppelin/hardhat-upgrades": "^1.22.1",
+    "blockchain-key-manager": "^1.0.5",
+    "hardhat-deploy": "^0.11.25"
   }
 }

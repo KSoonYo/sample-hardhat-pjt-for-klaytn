@@ -12,7 +12,7 @@ import "./library/KIP7Upgradeable.sol";
 
 
 
-contract FsKlay is Initializable, KIP7Upgradeable {
+contract FsKlayV2 is KIP7Upgradeable {
     using AddressUpgradeable for address;
     uint256 private INIT_AMOUNT;
     
@@ -24,8 +24,9 @@ contract FsKlay is Initializable, KIP7Upgradeable {
         INIT_AMOUNT = 99999999999999;
         _mint(msg.sender, INIT_AMOUNT);
     }
+
     function test() external pure returns(uint){
-        return 0;
+        return 1;
     }
 }
 

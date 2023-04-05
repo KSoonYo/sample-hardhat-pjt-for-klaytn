@@ -4,15 +4,18 @@ pragma solidity ^0.8.9;
 import "@klaytn/contracts/KIP/token/KIP7/IKIP7.sol";
 import "@klaytn/contracts/KIP/token/KIP7/IKIP7Receiver.sol";
 import "@klaytn/contracts/KIP/token/KIP7/extensions/IKIP7Metadata.sol";
+import "@klaytn/contracts/KIP/utils/introspection/KIP13.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
+
 
 contract KIP7Upgradeable is
     Initializable,
     ContextUpgradeable,
     IKIP7,
-    IKIP7Metadata
+    IKIP7Metadata,
+    KIP13
 {
     using AddressUpgradeable for address;
 
@@ -62,6 +65,16 @@ contract KIP7Upgradeable is
      */
     function symbol() public view virtual override returns (string memory) {
         return _symbol;
+    }
+
+    /**
+     * @dev See {IKIP13-supportsInterface}.
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(KIP13) returns (bool) {
+        return
+            interfaceId == type(IKIP7).interfaceId ||
+            interfaceId == type(IKIP7Metadata).interfaceId ||
+            KIP13.supportsInterface(interfaceId);
     }
 
     /**

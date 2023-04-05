@@ -1,7 +1,7 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 // import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 const INIT_AMOUNT = 99999999999999;
 
@@ -11,8 +11,9 @@ describe("Token contract", function () {
     const Token = await ethers.getContractFactory("FsKlay");
     const [owner, user1, user2] = await ethers.getSigners();
 
-    const FsKlayToken = await Token.deploy();
-
+    const FsKlayToken = await upgrades.deployProxy(Token, [], {
+      initializer: "initialize",
+    });
     await FsKlayToken.deployed();
     return { FsKlayToken, owner, user1, user2 };
   }
@@ -99,7 +100,7 @@ describe("Token contract", function () {
 
       await expect(
         FsKlayToken.connect(user1).transfer(owner.address, 1)
-      ).to.be.revertedWith("KIP7: Not enough balances");
+      ).to.be.revertedWith("KIP7: transfer amount exceeds balance");
 
       // Verify balances have not changed
       expect(await FsKlayToken.balanceOf(owner.address)).to.equal(
@@ -173,12 +174,45 @@ describe("Token contract", function () {
           user2.address,
           INIT_AMOUNT + 1
         )
-      ).to.be.revertedWith("KIP7: Not enough balances");
+      ).to.be.revertedWith("KIP7: transfer amount exceeds balance");
 
       // Verify balances have not changed
       expect(await FsKlayToken.balanceOf(owner.address)).to.equal(INIT_AMOUNT);
       expect(await FsKlayToken.balanceOf(user1.address)).to.equal(0);
       expect(await FsKlayToken.balanceOf(user2.address)).to.equal(0);
+    });
+  });
+});
+
+describe("Update token contract", function () {
+  // define fixture
+  async function updateTokenFixture() {
+    const Token = await ethers.getContractFactory("FsKlay");
+    const TokenV2 = await ethers.getContractFactory("FsKlayV2");
+    const [owner, user1, user2] = await ethers.getSigners();
+
+    const FsKlayToken = await upgrades.deployProxy(Token);
+    await FsKlayToken.deployed();
+
+    const FsKlayTokenV2 = await upgrades.upgradeProxy(
+      FsKlayToken.address,
+      TokenV2
+    );
+    return { FsKlayTokenV2, owner, user1, user2 };
+  }
+
+  describe("Update", function () {
+    it("should set the right owner", async function () {
+      const { FsKlayTokenV2, owner } = await loadFixture(updateTokenFixture);
+      expect(await FsKlayTokenV2.signer.getAddress()).to.equal(owner.address);
+    });
+    it("should upgrade FsKlay to FsKlayV2", async function () {
+      const { FsKlayTokenV2 } = await loadFixture(updateTokenFixture);
+      expect(await FsKlayTokenV2.test()).to.equal(1);
+    });
+    it("should keep the initial amount of FsKlay", async function () {
+      const { FsKlayTokenV2 } = await loadFixture(updateTokenFixture);
+      expect(await FsKlayTokenV2.totalSupply()).to.equal(INIT_AMOUNT);
     });
   });
 });

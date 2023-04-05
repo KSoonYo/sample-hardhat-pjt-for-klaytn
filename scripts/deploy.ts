@@ -1,8 +1,7 @@
-import { artifacts, ethers } from "hardhat";
-import { formatEther } from "ethers/lib/utils";
-import path from "path";
-import fs from "fs";
-import { FsKlay } from "../typechain-types";
+import { ethers, upgrades } from "hardhat";
+// import path from "path";
+// import fs from "fs";
+// import { FsKlay } from "../typechain-types";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -12,32 +11,33 @@ async function main() {
   );
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const FsKlayToken = await ethers.getContractFactory("FsKlay");
-  const FsKlay = await FsKlayToken.deploy();
-  await FsKlay.deployed();
-
-  console.log("FsKlay address:", FsKlay.address);
-  saveFrontendFiles(FsKlay);
+  const FsKlayFactory = await ethers.getContractFactory("FsKlay");
+  console.log("Deploying FsKlay...");
+  const FsKlayMaster = await upgrades.deployProxy(FsKlayFactory, [], {
+    initializer: "initialize",
+  });
+  await FsKlayMaster.deployed();
+  console.log("FsKlayMaster deployed to: ", FsKlayMaster.address);
 }
 
-function saveFrontendFiles(token: FsKlay) {
-  const contractsDir = path.join(__dirname, "..", "frontend", "contracts");
+// function saveFrontendFiles(token: FsKlay) {
+//   const contractsDir = path.join(__dirname, "..", "frontend", "contracts");
 
-  if (!fs.existsSync(contractsDir)) {
-    fs.mkdirSync(contractsDir);
-  }
+//   if (!fs.existsSync(contractsDir)) {
+//     fs.mkdirSync(contractsDir);
+//   }
 
-  fs.writeFileSync(
-    path.join(contractsDir, "contract-address.json"),
-    JSON.stringify({ FsKlay: token.address }, undefined, 2)
-  );
+//   fs.writeFileSync(
+//     path.join(contractsDir, "contract-address.json"),
+//     JSON.stringify({ FsKlay: token.address }, undefined, 2)
+//   );
 
-  const TokenArtifact = artifacts.readArtifactSync("FsKlay");
-  fs.writeFileSync(
-    path.join(contractsDir, "FsKlay.json"),
-    JSON.stringify(TokenArtifact, null, 2)
-  );
-}
+//   const TokenArtifact = artifacts.readArtifactSync("FsKlay");
+//   fs.writeFileSync(
+//     path.join(contractsDir, "FsKlay.json"),
+//     JSON.stringify(TokenArtifact, null, 2)
+//   );
+// }
 
 main().catch((error) => {
   console.error(error);
