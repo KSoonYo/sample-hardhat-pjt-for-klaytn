@@ -1,6 +1,10 @@
-# Sample Hardhat Project
+# Sample Hardhat Project for Klaytn(KIP7, Upgradeable contract, Kaikas wallet)
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project demonstrates a basic Hardhat use case **for Klaytn network**. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+
+Plus, there is a simple frontend project which shows how to use Kaikas wallet API and connect Kaikas wallet. The project was created by `next.js`
+
+## Deploy contract
 
 Try running some of the following tasks:
 
@@ -12,7 +16,7 @@ npx hardhat node # operate hardhat network(local blockchain net)
 npx hardhat run scripts/deploy.ts --network localhost # deploy FsKlay token(upgradeable contract)
 ```
 
-## To upgrade contract
+## Upgrade contract
 
 In `scripts/upgrade.ts`, copy and paste this script.
 
@@ -47,3 +51,18 @@ and run `scripts/upgrade.ts`
 ```bash
 npx hardhat run scripts/upgrade.ts --network [localhost | baobab]
 ```
+
+## Check how to connect Kaikas wallet in Chrome
+
+It assumes that user has aleady installed the kaikas extension
+
+```bash
+cd frontend
+yarn dev
+```
+
+To see more info about kaikas API, check [the docs](https://docs.kaikas.io/02_api_reference/01_klaytn_provider).
+
+Here is more detailed [tutorial](https://github.com/klaytn/kaikas-tutorial)
+
+> _Note_ : **This tutorial has been archived.** Instead, [this repository](https://github.com/klaytn/klaytn-online-toolkit) shows how to connect a kaikas provider with `@klaytn/kaikas-web3-provider`
