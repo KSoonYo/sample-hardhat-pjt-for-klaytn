@@ -31,6 +31,7 @@
     "@openzeppelin/contracts-upgradeable": "^4.8.2",
     "@openzeppelin/hardhat-upgrades": "^1.22.1",
     "blockchain-key-manager": "^1.0.5",
+    "dotenv": "^16.0.3",
     "hardhat-deploy": "^0.11.25"
   }
 }
